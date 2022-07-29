@@ -15,7 +15,7 @@ const numericalToLetter = {
   "3.3":"C-",
   "3.7":"D+",
   "4":"D",
-  "F/FF":"5"
+  "5":"F/FF"
 }
 
 const generateEmailText = grades => {
