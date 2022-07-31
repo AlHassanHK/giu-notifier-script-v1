@@ -1,12 +1,11 @@
- require("./mongo");
+require("../mongo");
 
 const puppeteer = require("puppeteer");
-const user = require("./User");
-const email = require("./utils/email")
-
+const user = require("../User");
+const email = require("./utils/email");
 
 async function getTranscript(username, password) {
-  const browser = await puppeteer.launch({ headless: true});
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.authenticate({
     username: username,
@@ -68,12 +67,12 @@ async function checkAndNotifyUser(userObject, userEmail) {
     userObject.password
   );
   const differentCourses = getDifferentCourses(oldRecord, newRecord);
-  const databaseValue = {...oldRecord};
+  const databaseValue = { ...oldRecord };
   if (isEmpty(differentCourses)) {
     console.log("Courses Unchanged.");
 
     return;
-  } 
+  }
   email.sendGradeEmail(userEmail, differentCourses);
 
   Object.assign(databaseValue, differentCourses);
@@ -83,8 +82,14 @@ async function checkAndNotifyUser(userObject, userEmail) {
   );
 }
 
+
+
 const checkAllUsers = async () => {
   const allUsers = await user.find({});
+  if (isEmpty(allUsers)) {
+    console.log("database empty. checking again in 30 seconds.");
+    return;
+  }
   for (let user of allUsers) {
     await checkAndNotifyUser(user, user.email);
   }
@@ -92,6 +97,5 @@ const checkAllUsers = async () => {
 
 const start = (async () => {
   checkAllUsers();
-  setInterval(checkAllUsers, 2400000 );
+  setInterval(checkAllUsers, 15000);
 })();
-

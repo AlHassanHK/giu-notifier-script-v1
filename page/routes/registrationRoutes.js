@@ -1,16 +1,12 @@
 const express = require("express");
 //require controller here
 const router = express.Router();
+const controller = require("../controller/userController");
 
 
-router.get("/", (req, res) => {
-  res.render("frontpage.ejs");
-});
+router.get("/registration", controller.renderMainView);
 
-router.post("/save-credentials", (req, res)=>{
-    
-    res.json({username:req.body.username,password:req.body.password, email:req.body.email});
-});
+router.route("/registration").post(controller.saveUser);
 
 
 

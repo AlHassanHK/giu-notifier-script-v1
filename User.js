@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   grades: {
     type: Object,
+    default:{},
     required: true,
   },
 });
