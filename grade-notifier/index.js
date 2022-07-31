@@ -74,7 +74,6 @@ async function checkAndNotifyUser(userObject, userEmail) {
 
     return;
   } 
-  console.log(userEmail, typeof userEmail);  
   email.sendGradeEmail(userEmail, differentCourses);
 
   Object.assign(databaseValue, differentCourses);
@@ -96,35 +95,3 @@ const start = (async () => {
   setInterval(checkAllUsers, 2400000 );
 })();
 
-// console.log("LENGTH:", userInDB.grades.length);
-// console.log("User in Database:" , userInDB ,"\n Grades from Transcript:",  grades);
-
-// if(database.connection.status ==="connected"){
-  //   const userInDB = await user.findOne({"username":"alhassan.elkady"}).grades;
-  //   console.log(userInGetTranscript,userInDB);
-  // }
-  
-  //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>|
-  // Used if grades were an array of gradeSchema|
-  //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>|
-  
-  // function getUserGradesAsJSON (user)  {
-    //   const grades = user.grades;
-    //   let result = {};
-    //   grades.forEach((course) => {
-      //     result[course.courseName] = course.numericalGrade;
-      //   });
-      //   return result;
-      // };
-      // async function checkForChangedGrades(currentRecord, newRecord) {
-        //   Object.keys(currentRecord).forEach((key) => {
-          //     if (currentRecord[key] != newRecord[key]) {
-            //       currentRecord[key] = newRecord[key];
-            //     }
-            //   });
-//   return currentRecord;
-// }
-
-
-  // console.log("Changed user: ", userObject.username);
-  // console.table(differentCourses);
