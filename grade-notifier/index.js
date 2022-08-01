@@ -97,5 +97,5 @@ const checkAllUsers = async () => {
 
 const start = (async () => {
   checkAllUsers();
-  setInterval(checkAllUsers, 2700000);
+  setInterval(checkAllUsers, 270000);
 })();
