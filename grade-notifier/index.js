@@ -22,15 +22,15 @@ async function getTranscript(username, password) {
       console.log("Evaluations needed"); //to be added in email
     }
   });
-  await page.select("#ContentPlaceHolder1_stdYrLst", "19");
+  await page.select("#ContentPlaceHolder1_stdYrLst", "20");
   await page.waitForSelector("[id=Table4]");
   const gradeString = await page.evaluate(() => {
     const tables = $("[id=Table4]").toArray();
-    const Spring2022 = tables[2];
+    const Winter2023 = tables[0];
 
     let gradeMap = {};
-    for (var i = 0, row; (row = Spring2022.rows[i]); i++) {
-      if (i <= 1 || i === Spring2022.rows.length - 1) {
+    for (var i = 0, row; (row = Winter2023.rows[i]); i++) {
+      if (i <= 1 || i === Winter2023.rows.length - 1) {
         continue;
       }
       let value = row.innerText;
