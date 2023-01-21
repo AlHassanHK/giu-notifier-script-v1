@@ -3,9 +3,9 @@ require("../mongo");
 const puppeteer = require("puppeteer");
 const user = require("../User");
 const email = require("./utils/email");
-
+const decrypt = require("../decrypt");
 async function getTranscript(username, password) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.authenticate({
     username: username,
@@ -62,9 +62,10 @@ function getDifferentCourses(currentRecord, newRecord) {
 
 async function checkAndNotifyUser(userObject, userEmail) {
   const oldRecord = userObject.grades;
-  const newRecord = await getTranscript(
+  const decryptedPassword = decrypt(userObject.password);  
+    const newRecord = await getTranscript(
     userObject.username,
-    userObject.password
+    decryptedPassword
   );
   const differentCourses = getDifferentCourses(oldRecord, newRecord);
   const databaseValue = { ...oldRecord };
@@ -91,6 +92,7 @@ const checkAllUsers = async () => {
     return;
   }
   for (let user of allUsers) {
+    console.log(user);
     await checkAndNotifyUser(user, user.email);
   }
 };
