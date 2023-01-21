@@ -1,8 +1,6 @@
-// const app = require("./app");
-
+require("dotenv").config()
 const mongoose = require("mongoose");
-const mongoURL =
-  "mongodb+srv://Admin:zjop3nANJMQmrddT@cluster0.xc1pk.mongodb.net/users?retryWrites=true&w=majority";
+const mongoURL =process.env.CONNECTION_STRING;
 
 // const port = 3005
 
