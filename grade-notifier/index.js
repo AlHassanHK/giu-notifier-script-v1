@@ -92,7 +92,6 @@ const checkAllUsers = async () => {
     return;
   }
   for (let user of allUsers) {
-    console.log(user);
     await checkAndNotifyUser(user, user.email);
   }
 };
