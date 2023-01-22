@@ -5,7 +5,7 @@ const user = require("../User");
 const email = require("./utils/email");
 const decrypt = require("../decrypt");
 async function getTranscript(username, password) {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.authenticate({
     username: username,
