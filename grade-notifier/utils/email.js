@@ -6,6 +6,7 @@ require("dotenv").config();
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 
+
 const numericalToLetter = {
   "0.7":"A+",
   "1":"A",
