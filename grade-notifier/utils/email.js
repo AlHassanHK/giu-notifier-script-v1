@@ -1,10 +1,9 @@
 const sgMail = require("@sendgrid/mail");
-// require('dotenv').config()
-// dotenv.config({ path: "./config.env" });
-// const dotenv = require("dotenv");
-// dotenv.config({ path: "./config.env" });
 
-sgMail.setApiKey("deleted");
+require("dotenv").config();
+
+
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 
 const numericalToLetter = {
