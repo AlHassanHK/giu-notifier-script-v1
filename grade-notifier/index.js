@@ -4,7 +4,8 @@ const puppeteer = require("puppeteer");
 const user = require("../User");
 const email = require("./utils/email");
 const decrypt = require("../decrypt");
-async function getTranscript(username, password) {
+
+async function getTranscript(username, password, encryptedPassword) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.authenticate({
@@ -13,7 +14,16 @@ async function getTranscript(username, password) {
   });
   await page.goto("https://portal.giu-uni.de", { timeout: 0 });
   const transcript = await page.$("#ContentPlaceHolder1_lnk_transcript");
-  await transcript.click();
+  // if (transcript === null) {
+  //   const currentDate = new Date();
+  //   console.log("password:", password, "type:", typeof password);
+  //   throw new Error(`page is not rendered due to wrong credentials or slow internet connection. @ ${currentDate}`);
+  // }
+  try {
+    await transcript.click();
+  } catch (error) {
+    throw new Error("page is not rendered");
+  }
   await page.waitForSelector("#ContentPlaceHolder1_stdYrLst");
   await page.evaluate(() => {
     const yearOptions = document.getElementById("ContentPlaceHolder1_stdYrLst");
@@ -62,20 +72,23 @@ function getDifferentCourses(currentRecord, newRecord) {
 
 async function checkAndNotifyUser(userObject, userEmail) {
   const oldRecord = userObject.grades;
-  const decryptedPassword = decrypt(userObject.password);  
-    const newRecord = await getTranscript(
+  const decryptedPassword = decrypt(userObject.password);
+
+  const newRecord = await getTranscript(
     userObject.username,
     decryptedPassword
   );
+
   const differentCourses = getDifferentCourses(oldRecord, newRecord);
   const databaseValue = { ...oldRecord };
   if (isEmpty(differentCourses)) {
-    console.log("Courses Unchanged.");
-
+    const currentDate = new Date();
+    console.log("\x1b[32m Courses Unchanged\x1b[0m", `| \x1b[33m${userObject.username}\x1b[0m \x1b[90m @\x1b[0m \x1b[34m${currentDate} \x1b[0m`);
     return;
   }
   email.sendGradeEmail(userEmail, differentCourses);
-
+  const date = new Date();
+  console.log(`\x1b[32m EMAIL SENT:\x1b[0m \x1b[35m${userObject.username}\x1b[0m | \x1b[32m ADDRESS:\x1b[0m \x1b[35m${userEmail}\x1b[0m @ \x1b[31m${date}\x1b[0m`)
   Object.assign(databaseValue, differentCourses);
   await user.findOneAndUpdate(
     { username: userObject.username },
@@ -86,18 +99,19 @@ async function checkAndNotifyUser(userObject, userEmail) {
 
 
 const checkAllUsers = async () => {
+  const promiseArray = [];
   const allUsers = await user.find({});
   if (isEmpty(allUsers)) {
     console.log("database empty. checking again in 30 seconds.");
     return;
   }
   for (let user of allUsers) {
-    await checkAndNotifyUser(user, user.email);
+    promiseArray.push(checkAndNotifyUser(user, user.email));
   }
+  Promise.all(promiseArray);
 };
 
 const start = (async () => {
-  console.log("test");
   checkAllUsers();
-  setInterval(checkAllUsers, 2700000);
+  setInterval(checkAllUsers, 300000);
 })();
